@@ -12,7 +12,7 @@ export class TodoInstance extends Model<TodoAttributes> {}
 
 TodoInstance.init(
   {
-    id: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
+    id: { type: DataTypes.UUIDV4, primaryKey: true, allowNull: false },
     title: { type: DataTypes.STRING, allowNull: false },
     completed: {
       type: DataTypes.BOOLEAN,
