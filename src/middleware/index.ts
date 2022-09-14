@@ -6,7 +6,7 @@ class Middleware {
     {
       const error = validationResult(req);
       if (!error.isEmpty()) {
-        return res.json(error);
+        return res.json(error.array()[0]);
       }
       next();
     }

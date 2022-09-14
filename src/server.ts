@@ -33,14 +33,21 @@ app.post(
   }
 );
 
-app.get('/read', async (req: Request, res: Response) => {
-  try {
-    const records = await TodoInstance.findAll({ where: {} });
-    return res.json(records);
-  } catch (e) {
-    return res.json({ msg: 'fail to read', status: 500, route: '/read' });
+app.get(
+  '/read',
+  TodoValidator.checkReadTodo(),
+  Middleware.handelValidationError,
+  async (req: Request, res: Response) => {
+    try {
+      const limit = req.query?.limit as number | undefined;
+      const offset = req.query?.offset as number | undefined;
+      const records = await TodoInstance.findAll({ where: {}, limit, offset });
+      return res.json(records);
+    } catch (e) {
+      return res.json({ msg: 'fail to read', status: 500, route: '/read' });
+    }
   }
-});
+);
 
 app.listen(port, () => {
   console.log('Server start on port: ' + port);
