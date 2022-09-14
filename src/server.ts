@@ -38,7 +38,7 @@ app.get('/read', async (req: Request, res: Response) => {
     const records = await TodoInstance.findAll({ where: {} });
     return res.json(records);
   } catch (e) {
-    return res.json({ msg: 'fail to create', status: 500, route: '/read' });
+    return res.json({ msg: 'fail to read', status: 500, route: '/read' });
   }
 });
 
