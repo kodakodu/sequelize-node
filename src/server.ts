@@ -3,7 +3,7 @@ import db from './config/database.config';
 import { v4 as uuidv4 } from 'uuid';
 import { TodoInstance } from './model';
 import TodoValidator from './validator';
-import { validationResult } from 'express-validator';
+import Middleware from './middleware';
 
 db.sync().then(() => {
   console.log('connected to database');
@@ -21,13 +21,7 @@ app.use(express.json());
 app.post(
   '/create',
   TodoValidator.checkCreateTodo(),
-  (req: Request, res: Response, next: NextFunction) => {
-    const error = validationResult(req);
-    if (!error.isEmpty()) {
-      return res.json(error);
-    }
-    next();
-  },
+  Middleware.handelValidationError,
   async (req: Request, res: Response) => {
     const id = uuidv4();
     try {
@@ -39,8 +33,13 @@ app.post(
   }
 );
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('OK Tutti !');
+app.get('/read', async (req: Request, res: Response) => {
+  try {
+    const records = await TodoInstance.findAll({ where: {} });
+    return res.json(records);
+  } catch (e) {
+    return res.json({ msg: 'fail to create', status: 500, route: '/read' });
+  }
 });
 
 app.listen(port, () => {
